@@ -1,8 +1,9 @@
 import graphene
 import graphql_jwt
 from django.contrib.auth import get_user_model
-from graphql_jwt.shortcuts import get_token
+from django.utils import timezone
 
+from tmt.clocking.models import Clock, CurrentClock
 from tmt.clocking.schema.clock import ClockType
 from tmt.clocking.schema.user import UserType
 
@@ -10,15 +11,36 @@ from tmt.clocking.schema.user import UserType
 class ClockIn(graphene.Mutation):
     clock = graphene.Field(ClockType)
 
-    def mutate(self, info, username, password, email):
+    def mutate(self, info):
         user = info.context.user
         if user.is_anonymous:
             raise Exception('Authentication Failure: Your must be signed in')
+        if hasattr(user, 'currentclock'):
+            raise Exception('Clcoking in Failure: Your already clocking in please clock out first')
+        clock = Clock(user=user)
+        clock.save()
+        CurrentClock(user=user, clock=clock).save()
+        return ClockIn(clock=clock)
+
+
+class ClockOut(graphene.Mutation):
+    clock = graphene.Field(ClockType)
+
+    def mutate(self, info):
+        user = info.context.user
+        if user.is_anonymous:
+            raise Exception('Authentication Failure: Your must be signed in')
+        if not hasattr(user, 'currentclock'):
+            raise Exception('Clcoking out Failure: Please clock in first')
+        clock = user.currentclock.clock
+        clock.clocked_out = timezone.now()
+        clock.save()
+        user.currentclock.delete()
+        return ClockOut(clock=clock)
 
 
 class CreateUser(graphene.Mutation):
     user = graphene.Field(UserType)
-    token = graphene.String()
 
     class Arguments:
         username = graphene.String(required=True)
@@ -33,12 +55,12 @@ class CreateUser(graphene.Mutation):
         user.set_password(password)
         user.save()
 
-        token = get_token(user)
-
-        return CreateUser(user=user, token=token)
+        return CreateUser(user=user)
 
 
 class Mutation(graphene.ObjectType):
+    clock_in = ClockIn.Field()
+    clock_out = ClockOut.Field()
     create_user = CreateUser.Field()
     obtain_token = graphql_jwt.ObtainJSONWebToken.Field()
     verify_token = graphql_jwt.Verify.Field()
