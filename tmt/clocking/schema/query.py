@@ -3,6 +3,7 @@ from django.contrib.auth import get_user_model
 from graphene_django import DjangoObjectType
 
 from tmt.clocking.models import Clock, ActiveClocking
+from tmt.utils import check_auth
 
 
 class ClockType(DjangoObjectType):
@@ -23,20 +24,30 @@ class CurrentClock(DjangoObjectType):
         fields = ("clock",)
 
 
+class ClockedHours(graphene.ObjectType):
+    today = graphene.Int()
+    current_week = graphene.Int()
+    current_month = graphene.Int()
+
+
 class Query(graphene.ObjectType):
     me = graphene.Field(UserType)
     current_clock = graphene.Field(CurrentClock)
+    clocked_hours = graphene.Field(ClockedHours)
 
     def resolve_me(self, info):
         user = info.context.user
-        if user.is_anonymous:
-            raise Exception('Authentication Failure: Your must be signed in')
+        check_auth(user)
         return user
 
     def resolve_current_clock(self, info):
         user = info.context.user
-        if user.is_anonymous:
-            raise Exception('Authentication Failure: Your must be signed in')
+        check_auth(user)
         if not hasattr(user, 'current_clock'):
             raise Exception('Query currentClock Failure: Not have any currentClock now')
         return user.current_clock
+
+    def resolve_clocked_hours(self, info):
+        user = info.context.user
+        check_auth(user)
+        return ClockedHours(today=1, current_week=2, current_month=3)

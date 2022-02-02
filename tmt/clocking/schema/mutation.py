@@ -5,6 +5,7 @@ from django.utils import timezone
 
 from tmt.clocking.models import Clock, ActiveClocking
 from tmt.clocking.schema.query import ClockType, UserType
+from tmt.utils import check_auth
 
 
 class ClockIn(graphene.Mutation):
@@ -12,10 +13,9 @@ class ClockIn(graphene.Mutation):
 
     def mutate(self, info):
         user = info.context.user
-        if user.is_anonymous:
-            raise Exception('Authentication Failure: Your must be signed in')
+        check_auth(user)
         if hasattr(user, 'current_clock'):
-            raise Exception('Clcoking in Failure: Your already clocking in please clock out first')
+            raise Exception('Clocking in Failure: Your already clocking in please clock out first')
         clock = Clock(user=user)
         clock.save()
         ActiveClocking(user=user, clock=clock).save()
@@ -27,10 +27,9 @@ class ClockOut(graphene.Mutation):
 
     def mutate(self, info):
         user = info.context.user
-        if user.is_anonymous:
-            raise Exception('Authentication Failure: Your must be signed in')
+        check_auth(user)
         if not hasattr(user, 'current_clock'):
-            raise Exception('Clcoking out Failure: Please clock in first')
+            raise Exception('Clocking out Failure: Please clock in first')
         clock = user.current_clock.clock
         clock.clocked_out = timezone.now()
         clock.save()
