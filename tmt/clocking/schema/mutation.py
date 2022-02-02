@@ -3,7 +3,7 @@ import graphql_jwt
 from django.contrib.auth import get_user_model
 from graphql_jwt.shortcuts import get_token
 
-from tmt.clocking.schema.query import UserType
+from tmt.clocking.schema.user import UserType
 
 
 class CreateUser(graphene.Mutation):
