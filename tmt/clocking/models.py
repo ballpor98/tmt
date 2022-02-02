@@ -16,8 +16,8 @@ class Clock(models.Model):
         return f'{self.user}: {self.clocked_in} - {self.clocked_out}'
 
 
-class CurrentClock(models.Model):
-    user = models.OneToOneField(settings.AUTH_USER_MODEL, primary_key=True, on_delete=models.CASCADE)
+class ActiveClocking(models.Model):
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, related_name='current_clock', primary_key=True, on_delete=models.CASCADE)
     clock = models.OneToOneField(Clock, on_delete=models.CASCADE)
 
     def __str__(self):

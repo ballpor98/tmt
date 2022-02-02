@@ -3,7 +3,7 @@ import graphql_jwt
 from django.contrib.auth import get_user_model
 from django.utils import timezone
 
-from tmt.clocking.models import Clock, CurrentClock
+from tmt.clocking.models import Clock, ActiveClocking
 from tmt.clocking.schema.query import ClockType, UserType
 
 
@@ -14,11 +14,11 @@ class ClockIn(graphene.Mutation):
         user = info.context.user
         if user.is_anonymous:
             raise Exception('Authentication Failure: Your must be signed in')
-        if hasattr(user, 'currentclock'):
+        if hasattr(user, 'current_clock'):
             raise Exception('Clcoking in Failure: Your already clocking in please clock out first')
         clock = Clock(user=user)
         clock.save()
-        CurrentClock(user=user, clock=clock).save()
+        ActiveClocking(user=user, clock=clock).save()
         return ClockIn(clock=clock)
 
 
@@ -29,12 +29,12 @@ class ClockOut(graphene.Mutation):
         user = info.context.user
         if user.is_anonymous:
             raise Exception('Authentication Failure: Your must be signed in')
-        if not hasattr(user, 'currentclock'):
+        if not hasattr(user, 'current_clock'):
             raise Exception('Clcoking out Failure: Please clock in first')
-        clock = user.currentclock.clock
+        clock = user.current_clock.clock
         clock.clocked_out = timezone.now()
         clock.save()
-        user.currentclock.delete()
+        user.current_clock.delete()
         return ClockOut(clock=clock)
 
 

@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from tmt.clocking.models import User, Clock, CurrentClock
+from tmt.clocking.models import User, Clock, ActiveClocking
 
 
 class ClockAdmin(admin.ModelAdmin):
@@ -13,4 +13,4 @@ class CurrentClockAdmin(admin.ModelAdmin):
 
 admin.site.register(User, UserAdmin)
 admin.site.register(Clock, ClockAdmin)
-admin.site.register(CurrentClock, CurrentClockAdmin)
+admin.site.register(ActiveClocking, CurrentClockAdmin)
