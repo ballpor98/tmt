@@ -21,6 +21,7 @@ from tmt.clocking.schema import schema
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    # TODO: remove csrf_exempt
     path("graphql", csrf_exempt(GraphQLView.as_view(graphiql=True, schema=schema))),
 
 ]
