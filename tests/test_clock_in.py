@@ -7,7 +7,7 @@ from tmt.clocking.models import User
 
 GraphQLTestCase.GRAPHQL_URL = '/graphql'
 
-query_str = (
+clock_in_query_str = (
     '''
     mutation clockIn{
         clockIn{
@@ -37,7 +37,7 @@ class ClockInTestCase(GraphQLTestCase):
         self.headers = get_authorized_header(self.query, username, password)
 
     def test_success(self):
-        response = self.query(query=query_str, headers=self.headers)
+        response = self.query(query=clock_in_query_str, headers=self.headers)
 
         content = json.loads(response.content)
 
