@@ -40,6 +40,12 @@ TMT employee time clocking system, as a graphql service in Django
 ## Run
 
 ### run on local
+1. Set environment variable
+```shell
+export TMT_DJANGO_SECRET_KEY=django-insecure-secret-key
+export DEBUG_MODE=True
+```
+2. Start service
 ```shell
 source venv/bin/activate
 python -m manage runserver
