@@ -2,17 +2,10 @@ import graphene
 from django.contrib.auth import get_user_model
 from graphene_django import DjangoObjectType
 
-from tmt.clocking.models import Profile
-
 
 class UserType(DjangoObjectType):
     class Meta:
         model = get_user_model()
-
-
-class UserProfile(DjangoObjectType):
-    class Meta:
-        model = Profile
 
 
 class Query(graphene.ObjectType):
