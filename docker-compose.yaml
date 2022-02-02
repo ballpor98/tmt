@@ -10,6 +10,7 @@ services:
     ports:
       - ${APP_PORT:-8000}:8000
     environment:
+      TZ: Asia/Bangkok
       DEBUG_MODE: "True"
       TMT_DJANGO_SECRET_KEY: "django-insecure-mz)!@0ornp#gih#e&e#))699tfou%4u=uj#w0l#l_io+z=n1r)"
       TMT_JWT_EXPIRATION_DELTA_MINUTES: 30
