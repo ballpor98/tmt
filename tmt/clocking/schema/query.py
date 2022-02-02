@@ -1,12 +1,10 @@
-from datetime import datetime, timedelta
-from typing import List
-
 import graphene
 from django.contrib.auth import get_user_model
 from django.utils import timezone
 from graphene_django import DjangoObjectType
 
 from tmt.clocking.models import Clock, ActiveClocking
+from tmt.clocking.utils import get_first_week_day, get_clocked_hours
 from tmt.utils import check_auth
 
 
@@ -32,19 +30,6 @@ class ClockedHours(graphene.ObjectType):
     today = graphene.Int()
     current_week = graphene.Int()
     current_month = graphene.Int()
-
-
-def get_first_week_day(today) -> datetime:
-    # assume that start from monday
-    day_num = timedelta(days=today.weekday())
-    return today - day_num
-
-
-def get_clocked_hours(clocks: List[Clock]) -> int:
-    timedelta_list = [(clock.clocked_out - clock.clocked_in) for clock in clocks]
-    total_seconds = sum(timedelta_list, timedelta()).total_seconds()
-    total_hours = round(total_seconds / 3600.)
-    return int(total_hours)
 
 
 class Query(graphene.ObjectType):
