@@ -3,7 +3,17 @@ import graphql_jwt
 from django.contrib.auth import get_user_model
 from graphql_jwt.shortcuts import get_token
 
+from tmt.clocking.schema.clock import ClockType
 from tmt.clocking.schema.user import UserType
+
+
+class ClockIn(graphene.Mutation):
+    clock = graphene.Field(ClockType)
+
+    def mutate(self, info, username, password, email):
+        user = info.context.user
+        if user.is_anonymous:
+            raise Exception('Authentication Failure: Your must be signed in')
 
 
 class CreateUser(graphene.Mutation):
