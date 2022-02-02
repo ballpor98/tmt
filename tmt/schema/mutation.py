@@ -17,8 +17,7 @@ class CreateUser(graphene.Mutation):
         password = graphene.String(required=True)
         email = graphene.String(required=True)
 
-    @staticmethod
-    def mutate(info, username, password, email):
+    def mutate(self, info, username, password, email):
         user = get_user_model()(
             username=username,
             email=email,
@@ -35,3 +34,4 @@ class CreateUser(graphene.Mutation):
 class Mutation(graphene.ObjectType):
     create_user = CreateUser.Field()
     token_auth = graphql_jwt.ObtainJSONWebToken.Field()
+    verify_token = graphql_jwt.Verify.Field()
