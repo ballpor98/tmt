@@ -1,6 +1,20 @@
 import graphene
+from django.contrib.auth import get_user_model
+from graphene_django import DjangoObjectType
 
-from tmt.clocking.schema.user import UserType
+from tmt.clocking.models import Clock
+
+
+class ClockType(DjangoObjectType):
+    class Meta:
+        model = Clock
+        fields = ("id", "user", "clocked_in", "clocked_out")
+
+
+class UserType(DjangoObjectType):
+    class Meta:
+        model = get_user_model()
+        fields = ("id", "username", "email")
 
 
 class Query(graphene.ObjectType):

@@ -4,8 +4,7 @@ from django.contrib.auth import get_user_model
 from django.utils import timezone
 
 from tmt.clocking.models import Clock, CurrentClock
-from tmt.clocking.schema.clock import ClockType
-from tmt.clocking.schema.user import UserType
+from tmt.clocking.schema.query import ClockType, UserType
 
 
 class ClockIn(graphene.Mutation):
