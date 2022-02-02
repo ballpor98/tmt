@@ -124,7 +124,7 @@ GRAPHENE = {
     ],
 }
 
-jwt_expiration_delta_minutes = os.getenv('TMT_JWT_EXPIRATION_DELTA_MINUTES') or 5
+jwt_expiration_delta_minutes = os.getenv('TMT_JWT_EXPIRATION_DELTA_MINUTES') or 60
 GRAPHQL_JWT = {
     'JWT_PAYLOAD_HANDLER': 'tmt.utils.jwt_payload',
     'JWT_AUTH_HEADER_PREFIX': 'Bearer',
