@@ -10,7 +10,7 @@ class User(AbstractUser):
 class Clock(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='clocking_logs', on_delete=models.CASCADE)
     clocked_in = models.DateTimeField(auto_now_add=True)
-    clocked_out = models.DateTimeField(null=True)
+    clocked_out = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return f'{self.user}: {self.clocked_in} - {self.clocked_out}'
