@@ -30,12 +30,14 @@ TMT employee time clocking system, as a graphql service in Django
     ```shell
     pip install -r requirements.txt
     ```
-4. Build docker image
+
+### for docker
+1. Build docker image
     ```shell
     docker compose build
     ```
    
-## run
+## Run
 
 ### run on local
 ```shell
